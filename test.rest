@@ -1,0 +1,16 @@
+# host
+http://localhost:3001
+
+# querry
+#GET /api/persons
+
+#
+#GET /api/persons/65a78aaa7ad914671ad6e3f1
+
+#
+Content-Type: application/json
+POST /api/persons
+{
+    "name":"test",
+    "number":"125-678943"
+}

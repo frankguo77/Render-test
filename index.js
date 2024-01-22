@@ -18,26 +18,22 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({error: 'unknown endpoint'})
 }
 
-const errorHandler = (request, response, next) => {
-  console.error(error.message)
+const errorHandler = (error, request, response, next) => {
+  //console.error(error.message)
+  console.error('error: ', error.name)
 
   if (error.name === 'CastError') {
-    return response.status(400).send({error: 'malformatted id'})
+      return response.status(400).send({error: 'malformatted id'})
   } else if (error.name === 'ValidationError') {
-    return response.status(400).send({erorr: error.message})
+      return response.status(400).send({error: error.message})
   }
   
   next(error)
 }
 
-app.get('/api/persons', (request, response) => {
-    Person.find({}).then(persons => {
-        response.json(persons)
-    })
-})
-
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
+    console.log('Post:',body)
 
     const people = new Person ({
         name: body.name,
@@ -50,10 +46,21 @@ app.post('/api/persons', (request, response, next) => {
     .then(saved => {
         response.json(saved)
     })
-    .catch(error => next(error))
+    .catch(error => {
+      //console.log("Post Error: ", error)
+      next(error)
+    })
 })
 
+app.get('/api/persons', (request, response) => {
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
+})
+
+
 app.get('/api/persons/:id',(request, response, next) => {
+  console.log("Get", request.params.id)
     Person.findById(request.params.id)
     .then(person =>{
       if (person) {
@@ -62,7 +69,10 @@ app.get('/api/persons/:id',(request, response, next) => {
         response.status(404).end()
       }
     })
-    .catch(error => next(error))
+    .catch(error => {
+      //console.log('Get error:' , error)
+      next(error)
+    })
 })
 
 app.delete('/api/persons/:id',(request, response,next) => {
