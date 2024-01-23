@@ -8,7 +8,7 @@ const app = express()
 
 
 app.use(express.json())
-morgan.token('body', (req, res) => JSON.stringify(req.body))
+morgan.token('body', (req, _res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(cors())
 app.use(express.static('dist'))
@@ -78,7 +78,7 @@ app.get('/api/persons/:id',(request, response, next) => {
 app.delete('/api/persons/:id',(request, response,next) => {
     console.log('deleting: ', request.params.id)
     Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(_result => {
       response.status(204).end()
     })
     .catch(error => next(error))
